@@ -53,32 +53,41 @@ class Cupon
     father_cupon = Cupon.find_by(cupon_id: cupon_id)
     if father_cupon.social_limit <= father_cupon.social_count
       return "Already shared"
+    elsif friends.nil?
+      return "Empty friends"
     elsif Cupon.validate_date(father_cupon.valid_from, father_cupon.valid_until)
-      friends.each do |id|
-        Cupon.create(
-          :store_id => father_cupon.store_id,
-          :cupon_id => Cupon.secure_hash("#{id}"+ DateTime.now.to_s),
-          :user_fb_id => id,
-          :parent_cupon => father_cupon.cupon_id,
-          :cupon_text => father_cupon.cupon_text,
-          :valid_from => father_cupon.valid_from,
-          :valid_until => father_cupon.valid_until,
-          :used => false,
-          :kind => "IND"
-          ) 
-        end
-        if (father_cupon.kind == "SHA")
-          father_cupon.social_count = father_cupon.social_count + friends.size
-          father_cupon.save
-          if (father_cupon.social_count >= father_cupon.social_limit)
-            Cupon.new_social_cupon(father_cupon.cupon_id)
-          end
-        end
-        return "Sucess"
+      Cupon.cupon_friends(cupon_id, friends)
+      return "Sucess"
     else
       return "Expired"
     end
   end
+
+  def self.cupon_friends(cupon_id,friends)
+    father_cupon = Cupon.find_by(cupon_id: cupon_id)
+    friends.each do |id|
+      Cupon.create(
+        :store_id => father_cupon.store_id,
+        :cupon_id => Cupon.secure_hash("#{id}"+ DateTime.now.to_s),
+        :user_fb_id => id,
+        :parent_cupon => father_cupon.cupon_id,
+        :cupon_text => father_cupon.cupon_text,
+        :valid_from => father_cupon.valid_from,
+        :valid_until => father_cupon.valid_until,
+        :used => false,
+        :kind => "IND"
+        ) 
+    end
+    if (father_cupon.kind == "SHA")
+      father_cupon.social_count = father_cupon.social_count + friends.size
+      father_cupon.save
+      if (father_cupon.social_count >= father_cupon.social_limit)
+        Cupon.new_social_cupon(father_cupon.cupon_id)
+      end
+    end
+  end
+
+
 
   def self.new_social_cupon(cupon_id)
     father_cupon = Cupon.find_by(cupon_id: cupon_id)
