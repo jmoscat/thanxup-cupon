@@ -5,7 +5,7 @@ class CuponController < ApplicationController
     @redeem = "localhost:3000/redeem/"+@cupon.hash_key
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @redeem }
+      format.json { render json: @redeem}
     end
   end
 
