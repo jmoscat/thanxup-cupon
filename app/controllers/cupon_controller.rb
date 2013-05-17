@@ -1,16 +1,34 @@
 class CuponController < ApplicationController
 
 	def show
-    @cupon = Discount.find(:first, :conditions => [ "hash_key = ?", params[:hash_key]])
-    @redeem = "localhost:3000/redeem/"+@cupon.hash_key
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @redeem}
-    end
+    @cupon = Cupon.find_by(cupon_id: params[:cupon_id])
+    date_from = @cupon.valid_from.strftime("%d/%m/%Y")
+    date_until = @cupon.valid_until.strftime("%d/%m/%Y")
+    @date = "From " + date_from + " until " +date_until
   end
 
   def redeem
-  	@cupon = Discount.find(:first, :conditions => [ "hash_key = ?", params[:hash_key]])
-  	@client_password = Discount.where(:hash_key => params[:hash_key]).first.client.password
+    @cupon = Cupon.find_by(cupon_id: params[:cupon_id])
   end
+
+  def check
+    passcode = params[:passcode]
+    cupon = Cupon.find_by(cupon_id: params[:cupon_id])
+    if cupon.nil?
+      redirect_to :back, :notice => "Este cupon no existe :("
+    elsif (passcode != cupon.venue_pass)
+      redirect_to :back, :notice => "Passcode invalido..."
+    elsif Cupon.validate_date(cupon.valid_from, cupon.valid_until) == false
+      redirect_to :back, :notice => "Cupon ha cadudado"
+    elsif (cupon.used == true)
+      redirect_to :back, :notice => "Passcode invalido..."
+    else
+      Redeem.perform_async(cupon)
+      redirect_to :action => "success"
+    end
+  end
+
+  def success
+  end
+
 end

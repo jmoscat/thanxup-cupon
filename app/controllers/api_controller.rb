@@ -1,5 +1,5 @@
 class ApiController < ApplicationController
- respond_to :json
+
 	def template
 		Cupon.cupon_from_template(params)
 		render :status =>200, :json=> {:status => "Success"}

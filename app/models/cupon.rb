@@ -1,3 +1,5 @@
+require 'rest_client'
+
 class Cupon
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -6,6 +8,11 @@ class Cupon
   field :user_fb_id, type: String
   field :qr, type: String
   field :parent_cupon, type: String
+
+  field :user_name, type: String
+  field :venue_name, type: String
+  field :venue_pass, type: String
+
 # Cupon info
 	field :cupon_text, type: String
 	field :valid_from, type: DateTime
@@ -23,9 +30,9 @@ class Cupon
   field :social_from, type: Date
   field :social_until, type: Date
 
-  
+  validates_uniqueness_of :cupon_id
   index({user_fb_id: 1})
-  index({ _id: 1}, { unique: true })
+  index({ cupon_id: 1}, { unique: true })
 
   def self.cupon_from_template(params)
     #template,user_id, venue_id
@@ -35,6 +42,9 @@ class Cupon
     new_cupon.store_id = params[:venue_id]
     new_cupon.user_fb_id = uid
     new_cupon.parent_cupon = ""
+    new_cupon.user_name = params[:user_name]
+    new_cupon.venue_name = params[:venue_name]
+    new_cupon.venue_pass = params[:venue_pass]
     new_cupon.used = false
     new_cupon.cupon_text = params[:cupon_text]
     new_cupon.valid_from = params[:valid_from]
@@ -70,6 +80,8 @@ class Cupon
         :store_id => father_cupon.store_id,
         :cupon_id => Cupon.secure_hash("#{id}"+ DateTime.now.to_s),
         :user_fb_id => id,
+        :venue_pass => father_cupon.venue_pass,
+        :venue_name =>father_cupon.venue_name,
         :parent_cupon => father_cupon.cupon_id,
         :cupon_text => father_cupon.cupon_text,
         :valid_from => father_cupon.valid_from,
@@ -81,8 +93,9 @@ class Cupon
     if (father_cupon.kind == "SHA")
       father_cupon.social_count = father_cupon.social_count + friends.size
       father_cupon.save
+      Weekly.perform_async(father_cupon.user_fb_id,1,friends.size)
       if (father_cupon.social_count >= father_cupon.social_limit)
-        Cupon.new_social_cupon(father_cupon.cupon_id)
+        SocialCupon.perform_async(father_cupon.cupon_id) #Cupon.new_social_cupon(father_cupon.cupon_id)
       end
     end
   end
@@ -96,6 +109,8 @@ class Cupon
         :store_id => father_cupon.store_id,
         :cupon_id => secure_hash("#{user_id}"+ DateTime.now.to_s),
         :user_fb_id => user_id,
+        :venue_name => father_cupon.venue_name,
+        :venue_pass => father_cupon.venue_pass,
         :parent_cupon => "",
         :cupon_text => father_cupon.social_text,
         :valid_from => father_cupon.social_from,
@@ -124,14 +139,26 @@ class Cupon
 
   def redeem
     self.used = true
-    father_cupon = Cupon.find_by(cupon_id: cupon_id)
+    father_cupon = Cupon.find_by(cupon_id: self.parent_cupon)
     if (father_cupon != nil) && father_cupon.kind == "CONS"
-      father_cupon.social_count = father_cupon.social_count
+      father_cupon.social_count = father_cupon.social_count + 1
+      father_cupon.save
+      Weekly.perform_async(father_cupon.user_fb_id,2,1)
       if (father_cupon.social_count >= father_cupon.social_limit)
         Cupon.new_social_cupon(father_cupon.cupon_id)
         #notify user
       end
     end
   end
+
+  def self.weekly_notify(user_id, call_type, count)
+    if call_type == 1
+      respond = RestClient.post "http://api.thanxup.com/back/addshare", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
+    elsif call_type == 2
+      respond = RestClient.post "http://api.thanxup.com/back/addconsume", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
+    end
+  end
+
+
 
 end

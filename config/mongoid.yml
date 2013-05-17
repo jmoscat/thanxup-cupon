@@ -69,7 +69,7 @@ development:
 test:
   sessions:
     default:
-      database: thanxup_cupon_test
+      database: thanxup_api_test
       hosts:
         - localhost:27017
       options:
@@ -78,3 +78,19 @@ test:
         # low amounts for fast failures.
         max_retries: 1
         retry_interval: 0
+
+production:
+  sessions:
+    default:
+      hosts:
+        - ds059957.mongolab.com:59957
+      database: thanxup-cupon
+      username: thanxup-cupon
+      password: "19032011"
+      options:
+        consistency: :strong
+        # In the test environment we lower the retries and retry interval to
+        # low amounts for fast failures.
+        max_retries: 1
+        retry_interval: 0
+

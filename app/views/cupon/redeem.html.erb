@@ -1,11 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	  <meta name="apple-mobile-web-app-capable" content="yes">
+	  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+	  <title></title>
+	  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+	  
+	  <!-- Extra Codiqa features -->
+	  <link rel="stylesheet" href="codiqa.ext.css">
+	  
+	  <!-- jQuery and jQuery Mobile -->
+	  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	  <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
 
-<center><%= @cupon.text %></center>
-
-<center>
-<%= form_tag(:controller => "discount", :action => "check", :method => "get") do %>
-  <%= label_tag(:passcode, "Passcode:") %>
-  <%= text_field_tag(:passcode) %>
-  <%= hidden_field_tag "hash", @cupon.hash_key %>
- 	<%= submit_tag("Redeem") %>
-<% end %>
-</center>
+	  <!-- Extra Codiqa features -->
+	  <script src="https://d10ajoocuyu32n.cloudfront.net/codiqa.ext.js"></script>
+	  <style type="text/css">
+	    .ui-bar-a{
+	    background: #ff6e00;
+	    text-shadow: 0 0px 0 #000;;
+	    }
+	  </style>
+	</head>
+	<body>
+		<!-- Home -->
+		<div data-role="page" id="page1">
+		    <div data-theme="a" data-role="header">
+		        <h1>
+		            ThanxUp®
+		        </h1>
+		    </div>
+		    <div data-role="content">
+		    	<% if flash[:notice] %>  
+		    			<a href="google.es" data-rel="dialog" data-transition="pop">Open dialog</a>
+    					<div><%= flash[:notice] %></div>
+ 					<% end %>
+		    	<h3>Confirma el cupon de <%= @cupon.venue_name %> </h3>
+		        <form action="/check" data-ajax="false" method="get">
+		            <div data-role="fieldcontain">
+		                <label for="passcode">
+		                    Passcode
+		                </label>
+		                <input name="passcode" id="textinput1" placeholder="" value="" type="text">
+		                <%= hidden_field_tag "cupon_id", @cupon.cupon_id %>
+		            </div>
+		            <input type="submit" data-icon="check" data-iconpos="left" value="Check">
+		        </form>
+		    <div data-theme="g" data-role="footer" data-position="fixed">
+		        <h3>
+		            Powered by <a href="http://thanxup.com"><font color="#ff6e00">thanxup.com</font></a>
+		        </h3>
+		    </div>
+		</div>
+	</body>
+</html>

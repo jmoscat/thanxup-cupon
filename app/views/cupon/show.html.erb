@@ -1,3 +1,61 @@
- <%= image_tag"https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl="+@redeem+"&choe=UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title></title>
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+  
+  <!-- Extra Codiqa features -->
+  <link rel="stylesheet" href="codiqa.ext.css">
+  
+  <!-- jQuery and jQuery Mobile -->
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
 
- <%=@redeem%>
+  <!-- Extra Codiqa features -->
+  <script src="https://d10ajoocuyu32n.cloudfront.net/codiqa.ext.js"></script>
+  <style type="text/css">
+    .ui-bar-a{
+    background: #ff6e00;
+    text-shadow: 0 0px 0 #000;;
+    }
+  </style>
+</head>
+<body>
+<!-- Home -->
+<div data-role="page" id="page1">
+    <div data-theme="a" data-role="header">
+        <h1>
+            ThanxUp®
+        </h1>
+    </div>
+    <div data-role="content">
+    	<h1>
+        <%= @cupon.venue_name %>
+      </h1>
+      <h2>
+        <%= @cupon.cupon_text %>
+      </h2>
+        <div style=" text-align:center">
+          <img style="width: 150px; height: 150px" src="http://api.qrserver.com/v1/create-qr-code/?size=150x150&data=google.com">
+        </div>
+      <h4>
+       <font color="#92b1cd">Enseñanos este cupón en tu próxima visita ;)</font>
+      </h4>
+      <p>
+        <b>Válido hasta:</b> <%=@date %><br >
+        <b>Uso éxclusivo para:</b> <%=@cupon.user_name %>
+
+      </p>
+    </div>
+    <div data-theme="g" data-role="footer" data-position="fixed">
+        <h3>
+            Powered by <a href="http://thanxup.com"><font color="#ff6e00">thanxup.com</font></a>
+        </h3>
+    </div>
+</div>
+</body>
+</html>
