@@ -159,6 +159,8 @@ class Cupon
     end
   end
 
+  def self.social_notify( )
+
 
 
 end

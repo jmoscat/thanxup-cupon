@@ -22,6 +22,25 @@
 	    background: #ff6e00;
 	    text-shadow: 0 0px 0 #000;;
 	    }
+	    #alert {
+	    	color: #b94a48;
+				background: #f2dede;
+				border-color: #eed3d7;
+				text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+				border: 1px solid #fbeed5;
+				-webkit-border-radius: 4px;
+				border-radius: 4px;
+				font-weight: bold;
+	    }
+	    #notice {
+	    	color: #468847;
+				background: #dff0d8;
+				border-color: #d6e9c6;
+				text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+				border: 1px solid #fbeed5;
+				-webkit-border-radius: 4px;
+				border-radius: 4px;
+	    }
 	  </style>
 	</head>
 	<body>
@@ -33,11 +52,10 @@
 		        </h1>
 		    </div>
 		    <div data-role="content">
-		    	<% if flash[:notice] %>  
-		    			<a href="google.es" data-rel="dialog" data-transition="pop">Open dialog</a>
-    					<div><%= flash[:notice] %></div>
- 					<% end %>
-		    	<h3>Confirma el cupon de <%= @cupon.venue_name %> </h3>
+		   	<% flash.each do |name,msg| %>
+		    	<%= content_tag :div, msg, :id => name, :class => "ui-body ui-body-e" %>
+		    <% end %>
+		    	<h3><%= @cupon.venue_name %> </h3>
 		        <form action="/check" data-ajax="false" method="get">
 		            <div data-role="fieldcontain">
 		                <label for="passcode">

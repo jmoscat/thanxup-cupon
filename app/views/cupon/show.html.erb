@@ -40,7 +40,7 @@
         <%= @cupon.cupon_text %>
       </h2>
         <div style=" text-align:center">
-          <img style="width: 150px; height: 150px" src="http://api.qrserver.com/v1/create-qr-code/?size=150x150&data=google.com">
+          <%= image_tag"http://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+@redeem %>
         </div>
       <h4>
        <font color="#92b1cd">Enseñanos este cupón en tu próxima visita ;)</font>

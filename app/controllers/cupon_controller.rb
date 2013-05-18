@@ -5,6 +5,7 @@ class CuponController < ApplicationController
     date_from = @cupon.valid_from.strftime("%d/%m/%Y")
     date_until = @cupon.valid_until.strftime("%d/%m/%Y")
     @date = "From " + date_from + " until " +date_until
+    @redeem = "http://www.cupon.thanxup.com/cupon/redeem/"+params[:cupon_id]
   end
 
   def redeem
@@ -15,20 +16,16 @@ class CuponController < ApplicationController
     passcode = params[:passcode]
     cupon = Cupon.find_by(cupon_id: params[:cupon_id])
     if cupon.nil?
-      redirect_to :back, :notice => "Este cupon no existe :("
+      redirect_to :back, :alert => "Este cupon no existe :("
     elsif (passcode != cupon.venue_pass)
-      redirect_to :back, :notice => "Passcode invalido..."
+      redirect_to :back, :alert => "Passcode invalido..."
     elsif Cupon.validate_date(cupon.valid_from, cupon.valid_until) == false
-      redirect_to :back, :notice => "Cupon ha cadudado"
+      redirect_to :back, :alert => "Cupon ha cadudado"
     elsif (cupon.used == true)
-      redirect_to :back, :notice => "Passcode invalido..."
+      redirect_to :back, :alert => "Passcode invalido..."
     else
       Redeem.perform_async(cupon)
-      redirect_to :action => "success"
+      redirect_to :back, :notice => "Todo en orden!!"
     end
   end
-
-  def success
-  end
-
 end
