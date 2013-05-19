@@ -59,6 +59,7 @@ class Cupon
     new_cupon.save
   end
 
+#First method call to create a cupon for list of friends
   def self.cupon_from_cupon(cupon_id, friends)
     father_cupon = Cupon.find_by(cupon_id: cupon_id)
     if father_cupon.social_limit <= father_cupon.social_count
@@ -66,7 +67,7 @@ class Cupon
     elsif friends.nil?
       return "Empty friends"
     elsif Cupon.validate_date(father_cupon.valid_from, father_cupon.valid_until)
-      Cupon.cupon_friends(cupon_id, friends)
+      CuponFriends.perform_async(cupon_id, friends)
       return "Sucess"
     else
       return "Expired"
@@ -75,8 +76,9 @@ class Cupon
 
   def self.cupon_friends(cupon_id,friends)
     father_cupon = Cupon.find_by(cupon_id: cupon_id)
+    cupons = []
     friends.each do |id|
-      Cupon.create(
+      new_cupon = Cupon.create(
         :store_id => father_cupon.store_id,
         :cupon_id => Cupon.secure_hash("#{id}"+ DateTime.now.to_s),
         :user_fb_id => id,
@@ -89,6 +91,7 @@ class Cupon
         :used => false,
         :kind => "IND"
         ) 
+      cupons >> new_cupon.cupon_id
     end
     if (father_cupon.kind == "SHA")
       father_cupon.social_count = father_cupon.social_count + friends.size
@@ -98,6 +101,7 @@ class Cupon
         SocialCupon.perform_async(father_cupon.cupon_id) #Cupon.new_social_cupon(father_cupon.cupon_id)
       end
     end
+    NotifySocial.perform_async(cupons, friends, father_cupon.user_fb_id)
   end
 
 
@@ -117,8 +121,7 @@ class Cupon
         :valid_until => father_cupon.social_until,
         :used => false,
         :kind => "IND"
-        ) 
-    
+        )   
   end
 
   def self.getCupons(user_id)
@@ -159,7 +162,10 @@ class Cupon
     end
   end
 
-  def self.social_notify( )
+  def self.cupon_share_notify(cupon_ids, friends, user_id)
+    respond = RestClient.post "http://api.thanxup.com/back/socialnotify", {:cupons => cupon_ids, :friends => friends, :user_id => user_id}.to_json, :content_type => :json, :accept => :json
+
+  end
 
 
 
