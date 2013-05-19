@@ -7,9 +7,7 @@
 	  <meta name="apple-mobile-web-app-status-bar-style" content="black">
 	  <title></title>
 	  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
-	  
-	  <!-- Extra Codiqa features -->
-	  <link rel="stylesheet" href="codiqa.ext.css">
+	 
 	  
 	  <!-- jQuery and jQuery Mobile -->
 	  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -18,6 +16,13 @@
 	  <!-- Extra Codiqa features -->
 	  <script src="https://d10ajoocuyu32n.cloudfront.net/codiqa.ext.js"></script>
 	  <style type="text/css">
+			@font-face {
+			  font-family: ITC;
+			  src: url('<%= asset_path 'ITCKabelStd-Demi.otf' %>');
+			}
+			*{
+				font-family: ITC;
+			}
 	    .ui-bar-a{
 	    background: #ff6e00;
 	    text-shadow: 0 0px 0 #000;;
@@ -55,7 +60,7 @@
 		   	<% flash.each do |name,msg| %>
 		    	<%= content_tag :div, msg, :id => name, :class => "ui-body ui-body-e" %>
 		    <% end %>
-		    	<h3><%= @cupon.venue_name %> </h3>
+		    	<h3>Confirmar cupon de <%= @cupon.venue_name %> </h3>
 		        <form action="/check" data-ajax="false" method="get">
 		            <div data-role="fieldcontain">
 		                <label for="passcode">
@@ -66,7 +71,7 @@
 		            </div>
 		            <input type="submit" data-icon="check" data-iconpos="left" value="Check">
 		        </form>
-		    <div data-theme="g" data-role="footer" data-position="fixed">
+		    <div data-theme="c" data-role="footer" data-position="fixed">
 		        <h3>
 		            Powered by <a href="http://thanxup.com"><font color="#ff6e00">thanxup.com</font></a>
 		        </h3>

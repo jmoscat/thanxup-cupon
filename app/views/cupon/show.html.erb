@@ -8,8 +8,6 @@
   <title></title>
   <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
   
-  <!-- Extra Codiqa features -->
-  <link rel="stylesheet" href="codiqa.ext.css">
   
   <!-- jQuery and jQuery Mobile -->
   <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -22,6 +20,14 @@
     background: #ff6e00;
     text-shadow: 0 0px 0 #000;;
     }
+    @font-face {
+      font-family: ITC;
+      src: url('<%= asset_path 'ITCKabelStd-Demi.otf' %>');
+    }
+    *{
+      font-family: ITC;
+    }
+    b.thick {font-weight:bold;}
   </style>
 </head>
 <body>
@@ -45,13 +51,13 @@
       <h4>
        <font color="#92b1cd">Enseñanos este cupón en tu próxima visita ;)</font>
       </h4>
-      <p>
-        <b>Válido hasta:</b> <%=@date %><br >
-        <b>Uso éxclusivo para:</b> <%=@cupon.user_name %>
-
-      </p>
+      <h5>
+        <font color="#ff6e00">Validez: </font> <%=@date %><br >
+        <font color="#ff6e00">Uso éxclusivo para:</font> <%=@cupon.user_name %>
+      </h5>
     </div>
-    <div data-theme="g" data-role="footer" data-position="fixed">
+    <div data-theme="c
+    " data-role="footer" data-position="fixed">
         <h3>
             Powered by <a href="http://thanxup.com"><font color="#ff6e00">thanxup.com</font></a>
         </h3>
