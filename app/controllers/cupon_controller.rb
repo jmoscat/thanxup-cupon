@@ -18,14 +18,14 @@ class CuponController < ApplicationController
     if cupon.nil?
       redirect_to :back, :alert => "Este cupon no existe :("
     elsif (passcode != cupon.venue_pass)
-      redirect_to :back, :alert => "Passcode invalido..."
+      redirect_to :back, :alert => "Passcode invalido... :("
     elsif Cupon.validate_date(cupon.valid_from, cupon.valid_until) == false
-      redirect_to :back, :alert => "Cupon ha cadudado"
+      redirect_to :back, :alert => "Fuera de fecha de caducidad... :() "
     elsif (cupon.used == true)
-      redirect_to :back, :alert => "Passcode invalido..."
+      redirect_to :back, :alert => "Cupon usado :("
     else
-      Redeem.perform_async(cupon)
-      redirect_to :back, :notice => "Todo en orden!!"
+      Redeem.perform_async(params[:cupon_id])
+      redirect_to :back, :notice => "Todo en orden!! :)"
     end
   end
 end

@@ -60,7 +60,7 @@
 		   	<% flash.each do |name,msg| %>
 		    	<%= content_tag :div, msg, :id => name, :class => "ui-body ui-body-e" %>
 		    <% end %>
-		    	<h3>Confirmar cupon de <%= @cupon.venue_name %> </h3>
+		    	<h3>Confirmar cupon de <font color="#ff6e00"><%= @cupon.venue_name %></font></h3>
 		        <form action="/check" data-ajax="false" method="get">
 		            <div data-role="fieldcontain">
 		                <label for="passcode">
