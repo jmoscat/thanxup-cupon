@@ -166,9 +166,9 @@ class Cupon
 
   def self.weekly_notify(user_id, call_type, count)
     if call_type == 1
-      respond = RestClient.post "http://localhost:3000/back/addshare", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
+      respond = RestClient.post "http://api.thanxup.com/back/addshare", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
     elsif call_type == 2
-      respond = RestClient.post "http://localhost:3000/back/addconsume", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
+      respond = RestClient.post "http://api.thanxup.com/back/addconsume", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
     end
   end
 
