@@ -4,7 +4,6 @@ skip_before_filter :verify_authenticity_token
 	def template
 		#Template.perform_async(params)
 		Cupon.cupon_from_template(params)
-		debugger
 		render :status =>200, :json=> {:status => "Success"}
 	end
 
