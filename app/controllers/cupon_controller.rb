@@ -5,7 +5,7 @@ class CuponController < ApplicationController
     date_from = @cupon.valid_from.strftime("%d/%m/%Y")
     date_until = @cupon.valid_until.strftime("%d/%m/%Y")
     @date = date_from + " - " +date_until
-    @redeem = "http://www.coupon.thanxup.com/cupon/redeem/"+params[:cupon_id]
+    @redeem = "http://coupon.thanxup.com/cupon/redeem/"+params[:cupon_id]
   end
 
   def redeem
