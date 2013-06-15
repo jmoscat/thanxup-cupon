@@ -87,7 +87,7 @@ class Cupon
         :store_id => father_cupon.store_id,
         :cupon_id => Cupon.secure_hash("#{id}"+ DateTime.now.to_s),
         :user_fb_id => id,
-        :user_name => JSON.parse(respond)["name"],
+        :user_name => JSON.parse(name)["name"],
         :venue_pass => father_cupon.venue_pass,
         :venue_name =>father_cupon.venue_name,
         :parent_cupon => father_cupon.cupon_id,
