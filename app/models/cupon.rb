@@ -99,9 +99,12 @@ class Cupon
         ) 
       cupons << new_cupon.cupon_id
     end
-    if (father_cupon.kind == "SHA") && (father_cupon.social_redeem == false)
+    if (father_cupon.kind != "IND")
       father_cupon.social_count = father_cupon.social_count + friends.size
       father_cupon.save
+      NotifySocial.perform_async(cupons, friends, father_cupon.user_fb_id)
+    end
+    if (father_cupon.kind == "SHA") && (father_cupon.social_redeem == false)
       Weekly.perform_async(father_cupon.user_fb_id,1,friends.size)
       if (father_cupon.social_count >= father_cupon.social_limit)
         father_cupon.social_redeem = true
@@ -109,7 +112,6 @@ class Cupon
         SocialCupon.perform_async(father_cupon.cupon_id) #Cupon.new_social_cupon(father_cupon.cupon_id)
       end
     end
-    NotifySocial.perform_async(cupons, friends, father_cupon.user_fb_id)
   end
 
 
