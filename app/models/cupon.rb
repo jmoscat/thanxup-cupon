@@ -1,4 +1,4 @@
-#cupon logic
+#cupon
 require 'rest_client'
 require 'json'
 
