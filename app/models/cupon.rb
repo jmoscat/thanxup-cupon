@@ -20,6 +20,7 @@ class Cupon
 	field :valid_from, type: DateTime
   field :valid_until, type: DateTime
   field :used, type: Boolean,  default: false
+  field :used_date, type: Date
 
 #
   field :kind, type: String 
@@ -32,6 +33,7 @@ class Cupon
   field :social_offer, type: String
   field :social_from, type: Date
   field :social_until, type: Date
+  field :shared_date, type: Date
 
   validates_uniqueness_of :cupon_id
   index({user_fb_id: 1})
@@ -72,6 +74,7 @@ class Cupon
       return "Empty friends"
     elsif Cupon.validate_date(father_cupon.valid_from, father_cupon.valid_until)
       CuponFriends.perform_async(cupon_id, friends)
+      father_cupon.shared_date = Date.today
       return "Sucess"
     else
       return "Expired"
@@ -102,7 +105,7 @@ class Cupon
     if (father_cupon.kind != "IND")
       father_cupon.social_count = father_cupon.social_count + friends.size
       father_cupon.save
-      NotifySocial.perform_async(cupons, friends, father_cupon.user_fb_id)
+      NotifySocial.perform_async(cupons, friends, father_cupon.user_fb_id,father_cupon.store_id)
     end
     if (father_cupon.kind == "SHA") && (father_cupon.social_redeem == false)
       Weekly.perform_async(father_cupon.user_fb_id,1,friends.size)
@@ -152,6 +155,7 @@ class Cupon
   def self.redeem(cupon_id)
     cupon = Cupon.find_by(cupon_id: cupon_id)
     cupon.used = true
+    cupon.used_date = Date.today
     cupon.save
     father_cupon = Cupon.find_by(cupon_id: cupon.parent_cupon)
     if (father_cupon.kind == "CONS") && (father_cupon.social_redeem == false)
@@ -175,8 +179,8 @@ class Cupon
     end
   end
 
-  def self.cupon_share_notify(cupon_ids, friends, user_id)
-    respond = RestClient.post "http://api.thanxup.com/back/socialnotify", {:cupons => cupon_ids, :friends => friends, :user_id => user_id}.to_json, :content_type => :json, :accept => :json
+  def self.cupon_share_notify(cupon_ids, friends, user_id, venue_id)
+    respond = RestClient.post "http://api.thanxup.com/back/socialnotify", {:cupons => cupon_ids, :friends => friends, :user_id => user_id, :venue_id => venue_id}.to_json, :content_type => :json, :accept => :json
   end
 
 
