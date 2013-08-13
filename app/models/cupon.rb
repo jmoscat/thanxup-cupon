@@ -20,7 +20,7 @@ class Cupon
 	field :valid_from, type: DateTime
   field :valid_until, type: DateTime
   field :used, type: Boolean,  default: false
-  field :used_date, type: Date
+  field :used_date, type: DateTime
 
 #
   field :kind, type: String 
@@ -31,9 +31,9 @@ class Cupon
   field :social_count, type: Integer, default: 0
   field :social_limit, type: Integer
   field :social_offer, type: String
-  field :social_from, type: Date
-  field :social_until, type: Date
-  field :shared_date, type: Date
+  field :social_from, type: DateTime
+  field :social_until, type: DateTime
+  field :shared_date, type: DateTime
 
   validates_uniqueness_of :cupon_id
   index({user_fb_id: 1})
@@ -63,6 +63,8 @@ class Cupon
     new_cupon.social_from  = params["social_from"]
     new_cupon.social_until  = params["social_until"]
     new_cupon.save
+    #Notificacion API
+
   end
 
 #First method call to create a cupon for list of friends
@@ -83,6 +85,7 @@ class Cupon
 
   def self.cupon_friends(cupon_id,friends)
     father_cupon = Cupon.find_by(cupon_id: cupon_id)
+    fathe_cupon.shared_date = Time.now.utc
     cupons = []
     friends.each do |id|
       name = RestClient.get "http://graph.facebook.com/"+"#{id}"+"?fields=name", :content_type => :json, :accept => :json
@@ -101,6 +104,8 @@ class Cupon
         :kind => "IND"
         ) 
       cupons << new_cupon.cupon_id
+      #Notificaciones api y iphone (sin worker), check if on ThanxUp
+
     end
     if (father_cupon.kind != "IND")
       father_cupon.social_count = father_cupon.social_count + friends.size
@@ -135,11 +140,18 @@ class Cupon
         :used => false,
         :kind => "IND"
         )   
+    #notificacion API sin worker
+  end
+  def self.getCupons(user_id, update_stamp_str)
+    update_stamp = Time.parse(update_stamp_str)
+    return Cupon.where(user_fb_id: user_id, used: false, :created_at.gte => update_stamp).to_json(:only => [ :cupon_id, :store_id, :cupon_text, :valid_from, :valid_until, :kind, :social_text ])
   end
 
-  def self.getCupons(user_id)
-    return Cupon.where(user_fb_id: user_id, used: false).to_json(:only => [ :cupon_id, :store_id, :cupon_text, :valid_from, :valid_until, :kind ])
+  def self.getUsedCupons (user_id, update_stamp_str)
+    update_stamp = Time.parse(update_stamp_str)
+    return Cupon.where(user_fb_id: user_id, used: true, :used_date.gte =>update_stamp).to_json(:only => [ :cupon_id])
   end
+
 
   def self.secure_hash (string)
     Digest::SHA2.hexdigest(string)
@@ -152,10 +164,11 @@ class Cupon
       return false
     end
   end
+
   def self.redeem(cupon_id)
     cupon = Cupon.find_by(cupon_id: cupon_id)
     cupon.used = true
-    cupon.used_date = Date.today
+    cupon.used_date = Time.now.utc
     cupon.save
     father_cupon = Cupon.find_by(cupon_id: cupon.parent_cupon)
     if (father_cupon.kind == "CONS") && (father_cupon.social_redeem == false)
@@ -182,7 +195,5 @@ class Cupon
   def self.cupon_share_notify(cupon_ids, friends, user_id, venue_id)
     respond = RestClient.post "http://api.thanxup.com/back/socialnotify", {:cupons => cupon_ids, :friends => friends, :user_id => user_id, :venue_id => venue_id}.to_json, :content_type => :json, :accept => :json
   end
-
-
 
 end
