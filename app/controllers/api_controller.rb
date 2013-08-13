@@ -16,7 +16,7 @@ end
 #curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"user_id":"545887286"}' http://localhost:3000/api/getcupons.json
   def getcupons
     respond_to do |format|
-      format.json { render :status => 200, :json => {:cupons =>Cupon.getCupons(params[:user_id],params[:update_stamp]), :not_used => Cupon.getUsedCupons(params[:user_id],params[:update_stamp]), :updated => Time.now.utc.to_s }}
+      format.json { render :status => 200, :json => {:cupons =>Cupon.getCupons(params[:user_id],params[:update_stamp]), :used => Cupon.getUsedCupons(params[:user_id],params[:update_stamp]), :update_stamp => Time.now.utc.to_s }}
     end
   end
 
