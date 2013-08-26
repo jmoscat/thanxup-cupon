@@ -105,19 +105,17 @@ class Cupon
         ) 
       cupons << new_cupon.cupon_id
       #Notificaciones api y iphone (sin worker), check if on ThanxUp
+      Cupon.cupon_share_notify(cupons, friends, father_cupon.user_fb_id,father_cupon.store_id)
 
     end
-    if (father_cupon.kind != "IND")
+    if (father_cupon.kind == "SHA") && (father_cupon.social_redeem == false)
       father_cupon.social_count = father_cupon.social_count + friends.size
       father_cupon.save
-      NotifySocial.perform_async(cupons, friends, father_cupon.user_fb_id,father_cupon.store_id)
-    end
-    if (father_cupon.kind == "SHA") && (father_cupon.social_redeem == false)
       Weekly.perform_async(father_cupon.user_fb_id,1,friends.size)
       if (father_cupon.social_count >= father_cupon.social_limit)
         father_cupon.social_redeem = true
         father_cupon.save
-        SocialCupon.perform_async(father_cupon.cupon_id) #Cupon.new_social_cupon(father_cupon.cupon_id)
+        Cupon.new_social_cupon(father_cupon.cupon_id) #OLD:SocialCupon.perform_async(father_cupon.cupon_id) #
       end
     end
   end
