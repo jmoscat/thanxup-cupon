@@ -142,12 +142,19 @@ class Cupon
   end
   def self.getCupons(user_id, update_stamp_str)
     update_stamp = Time.parse(update_stamp_str)
-    return Cupon.where(user_fb_id: user_id, used: false, :created_at.gte => update_stamp).to_json(:only => [ :cupon_id, :store_id, :cupon_text, :valid_from, :valid_until, :kind, :social_text ])
+    return Cupon.where(user_fb_id: user_id, used: false, :created_at.gte => update_stamp).to_json(:only => [ :cupon_id, :store_id, :venue_name ,:cupon_text, :valid_from, :valid_until, :kind, :social_text ])
   end
 
   def self.getUsedCupons (user_id, update_stamp_str)
     update_stamp = Time.parse(update_stamp_str)
-    return Cupon.where(user_fb_id: user_id, used: true, :used_date.gte =>update_stamp).to_json(:only => [ :cupon_id])
+    used = Cupon.only(:cupon_id).where(user_fb_id: user_id, used: true, :used_date.gte =>update_stamp)
+    respon = "["
+
+    used.each do |x|
+      respon = respon + "\'"+x.cupon_id + "\',"
+    end
+    respon = respon[0..-2] + "]"
+    return respon
   end
 
 
