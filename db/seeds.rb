@@ -9,7 +9,7 @@
 cupon1 = Cupon.new(
 	store_id:"121231",
 	cupon_id: "0b5459ca1423670d69b33afe62842afb5c134b64c072d00f8a1994a9888a95012",
-	cupon_text: "Cupon copas",
+	cupon_text: "Cupon domingo hoy!",
 	valid_from: "Sat, 18 May 2013 09:17:57 -0700",
 	valid_until: "Tue, 21 May 2014 09:17:57 -0700",
 	user_fb_id: "1220884986",

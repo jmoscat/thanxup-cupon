@@ -176,17 +176,23 @@ class Cupon
     cupon.used_date = Time.now.utc
     cupon.save
     father_cupon = Cupon.find_by(cupon_id: cupon.parent_cupon)
-    if (father_cupon.kind == "CONS") && (father_cupon.social_redeem == false)
-      father_cupon.social_count = father_cupon.social_count + 1
-      father_cupon.save
+    if (father_cupon.kind != "IND")
       Cupon.weekly_notify(father_cupon.user_fb_id, 2, 1)
-      if (father_cupon.social_count >= father_cupon.social_limit)
-        father_cupon.social_redeem = true
-        father_cupon.save
-        Cupon.new_social_cupon(father_cupon.cupon_id)
-        #notify user
-      end
     end
+
+  # CUANDO TENGAMOS CONSUMIBLES...
+  #  father_cupon = Cupon.find_by(cupon_id: cupon.parent_cupon)
+  #  if (father_cupon.kind == "CONS") && (father_cupon.social_redeem == false)
+  #    father_cupon.social_count = father_cupon.social_count + 1
+  #    father_cupon.save
+  #    Cupon.weekly_notify(father_cupon.user_fb_id, 2, 1)
+  #    if (father_cupon.social_count >= father_cupon.social_limit)
+  #      father_cupon.social_redeem = true
+  #      father_cupon.save
+  #      Cupon.new_social_cupon(father_cupon.cupon_id)
+  #     #notify user
+  #    end
+  #  end
   end
 
   def self.weekly_notify(user_id, call_type, count)
