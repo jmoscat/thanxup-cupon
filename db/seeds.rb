@@ -8,11 +8,12 @@
 
 cupon1 = Cupon.new(
 	store_id:"121231",
-	cupon_id: "0b5459ca1423670d69b33afe62842afb5c134b64c072d00f8a1994a9888a95012",
-	cupon_text: "Cupon domingo hoy!",
+	cupon_id: "0b5459ca1423672d69b33afe62842afb5c134b64cd072d00f8a1994a9888a35012",
+	cupon_text: "Este es un cupon con texto maaaaaazo de largo para que te vuelvas loco maquetando, si senhor!! oy yeah como molo",
 	valid_from: "Sat, 18 May 2013 09:17:57 -0700",
 	valid_until: "Tue, 21 May 2014 09:17:57 -0700",
 	user_fb_id: "1220884986",
+	venue_name: "Rixi House",
 	used_date: "",
 	used: false,
 	kind: "SHARABLE",
