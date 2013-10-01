@@ -6,3 +6,7 @@
   font-family: ITC;
   src: url("/assets/fonts/ITCKabelStd-Demi.otf");
 }
+a:link {text-decoration:none;}    /* unvisited link */
+a:visited {text-decoration:none;} /* visited link */
+a:hover {text-decoration:underline;}   /* mouse over link */
+a:active {text-decoration:underline;}  /* selected link */

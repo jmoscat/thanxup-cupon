@@ -85,37 +85,40 @@ class Cupon
 
   def self.cupon_friends(cupon_id,friends)
     father_cupon = Cupon.find_by(cupon_id: cupon_id)
-    fathe_cupon.shared_date = Time.now.utc
+    father_cupon.shared_date = Time.now.utc
     cupons = []
-    friends.each do |id|
-      name = RestClient.get "http://graph.facebook.com/"+"#{id}"+"?fields=name", :content_type => :json, :accept => :json
-      new_cupon = Cupon.create(
-        :store_id => father_cupon.store_id,
-        :cupon_id => Cupon.secure_hash("#{id}"+ DateTime.now.to_s),
-        :user_fb_id => id,
-        :user_name => JSON.parse(name)["name"],
-        :venue_pass => father_cupon.venue_pass,
-        :venue_name =>father_cupon.venue_name,
-        :parent_cupon => father_cupon.cupon_id,
-        :cupon_text => father_cupon.cupon_text,
-        :valid_from => father_cupon.valid_from,
-        :valid_until => father_cupon.valid_until,
-        :used => false,
-        :kind => "IND"
-        ) 
-      cupons << new_cupon.cupon_id
-      #Notificaciones api y iphone (sin worker), check if on ThanxUp
-      Cupon.cupon_share_notify(cupons, friends, father_cupon.user_fb_id,father_cupon.store_id)
-
-    end
-    if (father_cupon.kind == "SHA") && (father_cupon.social_redeem == false)
-      father_cupon.social_count = father_cupon.social_count + friends.size
-      father_cupon.save
-      Weekly.perform_async(father_cupon.user_fb_id,1,friends.size)
-      if (father_cupon.social_count >= father_cupon.social_limit)
-        father_cupon.social_redeem = true
+    if !friends.empty? #Check if friends is empty
+      friends.each do |id|
+        name = RestClient.get "http://graph.facebook.com/"+"#{id}"+"?fields=name", :content_type => :json, :accept => :json
+        if !name.nil? #If user doesn't exist....
+          new_cupon = Cupon.create(
+            :store_id => father_cupon.store_id,
+            :cupon_id => Cupon.secure_hash("#{id}"+ DateTime.now.to_s),
+            :user_fb_id => id,
+            :user_name => JSON.parse(name)["name"],
+            :venue_pass => father_cupon.venue_pass,
+            :venue_name =>father_cupon.venue_name,
+            :parent_cupon => father_cupon.cupon_id,
+            :cupon_text => father_cupon.cupon_text,
+            :valid_from => father_cupon.valid_from,
+            :valid_until => father_cupon.valid_until,
+            :used => false,
+            :kind => "IND"
+            ) 
+          cupons << new_cupon.cupon_id
+          #Notificaciones api y iphone (sin worker), check if on ThanxUp
+          Cupon.cupon_share_notify(cupons, friends, father_cupon.user_fb_id,father_cupon.store_id)
+        end
+      end
+      if (father_cupon.kind == "SHA") && (father_cupon.social_redeem == false)
+        father_cupon.social_count = father_cupon.social_count + cupons.count
         father_cupon.save
-        Cupon.new_social_cupon(father_cupon.cupon_id) #OLD:SocialCupon.perform_async(father_cupon.cupon_id) #
+        Cupon.weekly_notify(father_cupon.user_fb_id, 1, cupons.count)
+        if (father_cupon.social_count >= father_cupon.social_limit)
+          father_cupon.social_redeem = true
+          father_cupon.save
+          Cupon.new_social_cupon(father_cupon.cupon_id) #OLD:SocialCupon.perform_async(father_cupon.cupon_id) #
+        end
       end
     end
   end
@@ -130,6 +133,7 @@ class Cupon
         :cupon_id => secure_hash("#{user_id}"+ DateTime.now.to_s),
         :user_fb_id => user_id,
         :venue_name => father_cupon.venue_name,
+        :user_name => father.cupon.user_name,
         :venue_pass => father_cupon.venue_pass,
         :parent_cupon => "",
         :cupon_text => father_cupon.social_text,
@@ -197,14 +201,14 @@ class Cupon
 
   def self.weekly_notify(user_id, call_type, count)
     if call_type == 1
-      respond = RestClient.post "http://api.thanxup.com/back/addshare", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
+      respond = RestClient.post "http://localhost:3001/back/addshare", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
     elsif call_type == 2
-      respond = RestClient.post "http://api.thanxup.com/back/addconsume", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
+      respond = RestClient.post "http://localhost:3001/back/addconsume", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
     end
   end
 
   def self.cupon_share_notify(cupon_ids, friends, user_id, venue_id)
-    respond = RestClient.post "http://api.thanxup.com/back/socialnotify", {:cupons => cupon_ids, :friends => friends, :user_id => user_id, :venue_id => venue_id}.to_json, :content_type => :json, :accept => :json
+    respond = RestClient.post "http://localhost:3001/back/socialnotify", {:cupons => cupon_ids, :friends => friends, :user_id => user_id, :venue_id => venue_id}.to_json, :content_type => :json, :accept => :json
   end
 
 end
