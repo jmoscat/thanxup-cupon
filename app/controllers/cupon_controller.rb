@@ -1,16 +1,32 @@
 class CuponController < ApplicationController
 
 	def show
-    @cupon = Discount.find(:first, :conditions => [ "hash_key = ?", params[:hash_key]])
-    @redeem = "localhost:3000/redeem/"+@cupon.hash_key
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @redeem}
-    end
+    @cupon = Cupon.find_by(cupon_id: params[:cupon_id])
+    @url = "http://api.thanxup.com/place/site"+@cupon.store_id
+    date_from = @cupon.valid_from.strftime("%d/%m/%Y")
+    date_until = @cupon.valid_until.strftime("%d/%m/%Y")
+    @date = date_from + " - " +date_until
+    @redeem = "http://coupon.thanxup.com/cupon/redeem/"+params[:cupon_id]
   end
 
   def redeem
-  	@cupon = Discount.find(:first, :conditions => [ "hash_key = ?", params[:hash_key]])
-  	@client_password = Discount.where(:hash_key => params[:hash_key]).first.client.password
+    @cupon = Cupon.find_by(cupon_id: params[:cupon_id])
+  end
+
+  def check
+    passcode = params[:passcode]
+    cupon = Cupon.find_by(cupon_id: params[:cupon_id])
+    if cupon.nil?
+      redirect_to :back, :alert => "Este cupon no existe :("
+    elsif (passcode != cupon.venue_pass)
+      redirect_to :back, :alert => "Passcode invalido... :("
+    elsif Cupon.validate_date(cupon.valid_from, cupon.valid_until) == false
+      redirect_to :back, :alert => "Fuera de fecha de caducidad... :() "
+    elsif (cupon.used == true)
+      redirect_to :back, :alert => "Cupon usado :("
+    else
+      Redeem.perform_async(params[:cupon_id])
+      redirect_to :back, :notice => "Todo en orden!! :)"
+    end
   end
 end

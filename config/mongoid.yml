@@ -78,3 +78,21 @@ test:
         # low amounts for fast failures.
         max_retries: 1
         retry_interval: 0
+
+production:
+  sessions:
+    default:
+      hosts:
+        - localhost:27017
+      database: thanxup-cupon
+      username: thanxup-cupon
+      password: "Cup19032011"
+      options:
+        consistency: :eventual
+        # In the test environment we lower the retries and retry interval to
+        # low amounts for fast failures.
+        max_retries: 1
+        retry_interval: 0
+  options:
+    raise_not_found_error: false
+

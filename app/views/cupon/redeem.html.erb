@@ -1,11 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	  <meta name="apple-mobile-web-app-capable" content="yes">
+	  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+	  <title></title>
+	  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+	 
+	  
+	  <!-- jQuery and jQuery Mobile -->
+	  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	  <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
 
-<center><%= @cupon.text %></center>
-
-<center>
-<%= form_tag(:controller => "discount", :action => "check", :method => "get") do %>
-  <%= label_tag(:passcode, "Passcode:") %>
-  <%= text_field_tag(:passcode) %>
-  <%= hidden_field_tag "hash", @cupon.hash_key %>
- 	<%= submit_tag("Redeem") %>
-<% end %>
-</center>
+	  <!-- Extra Codiqa features -->
+	  <script src="https://d10ajoocuyu32n.cloudfront.net/codiqa.ext.js"></script>
+	  <style type="text/css">
+			@font-face {
+			  font-family: ITC;
+			  src: url('<%= asset_path 'ITCKabelStd-Demi.otf' %>');
+			}
+			*{
+				font-family: ITC;
+			}
+	    .ui-bar-a{
+	    background: #ff6e00;
+	    text-shadow: 0 0px 0 #000;;
+	    }
+	    #alert {
+	    	color: #b94a48;
+				background: #f2dede;
+				border-color: #eed3d7;
+				text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+				border: 1px solid #fbeed5;
+				-webkit-border-radius: 4px;
+				border-radius: 4px;
+				font-weight: bold;
+	    }
+	    #notice {
+	    	color: #468847;
+				background: #dff0d8;
+				border-color: #d6e9c6;
+				text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+				border: 1px solid #fbeed5;
+				-webkit-border-radius: 4px;
+				border-radius: 4px;
+	    }
+	  </style>
+	</head>
+	<body>
+		<!-- Home -->
+		<div data-role="page" id="page1">
+		    <div data-theme="a" data-role="header">
+		        <h1>
+		            ThanxUp®
+		        </h1>
+		    </div>
+		    <div data-role="content">
+		   	<% flash.each do |name,msg| %>
+		    	<%= content_tag :div, msg, :id => name, :class => "ui-body ui-body-e" %>
+		    <% end %>
+		    	<h3>Confirmar cupon de <font color="#ff6e00"><%= @cupon.venue_name %></font></h3>
+		        <form action="/check" data-ajax="false" method="get">
+		            <div data-role="fieldcontain">
+		                <label for="passcode">
+		                    Passcode
+		                </label>
+		                <input name="passcode" id="textinput1" placeholder="" value="" type="text">
+		                <%= hidden_field_tag "cupon_id", @cupon.cupon_id %>
+		            </div>
+		            <input type="submit" data-icon="check" data-iconpos="left" value="Check">
+		        </form>
+		    <div data-theme="c" data-role="footer" data-position="fixed">
+		        <h3>
+		            Powered by <a href="http://thanxup.com"><font color="#ff6e00">thanxup.com</font></a>
+		        </h3>
+		    </div>
+		</div>
+	</body>
+</html>
