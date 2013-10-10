@@ -1,3 +1,12 @@
-// Place all the styles related to the cupon controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.ui-bar-b h1{
+    background-color: #ff6e00;
+}
+
+@font-face {
+  font-family: ITC;
+  src: url("/assets/fonts/ITCKabelStd-Demi.otf");
+}
+a:link {text-decoration:none;}    /* unvisited link */
+a:visited {text-decoration:none;} /* visited link */
+a:hover {text-decoration:underline;}   /* mouse over link */
+a:active {text-decoration:underline;}  /* selected link */

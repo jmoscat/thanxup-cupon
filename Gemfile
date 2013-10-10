@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.2'
-
+gem 'debugger'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 #MongoDB
@@ -14,6 +14,9 @@ gem 'unicorn'
 
 #Background worker
 gem 'sidekiq'
+
+#REST
+gem 'rest-client', "~> 1.6.7"
 
 
 # Gems used only for assets and not required

@@ -18,8 +18,12 @@ ThanxupCupon::Application.configure do
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
 
+  
+
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
+
+  config.assets.paths << "#{Rails.root}/app/assets/fonts"
 
 
   # Do not compress assets
