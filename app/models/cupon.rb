@@ -200,15 +200,28 @@ class Cupon
   end
 
   def self.weekly_notify(user_id, call_type, count)
+    url_base = Cupon.getURL_env
     if call_type == 1
-      respond = RestClient.post "http://localhost:3001/back/addshare", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
+      url = url_base + "/back/addshare"
+      respond = RestClient.post url, {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
     elsif call_type == 2
-      respond = RestClient.post "http://localhost:3001/back/addconsume", {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
+      url = url_base + "/back/addconsume"
+      respond = RestClient.post url, {:user_id => user_id, :count => count }.to_json, :content_type => :json, :accept => :json
     end
   end
 
   def self.cupon_share_notify(cupon_ids, friends, user_id, venue_id)
-    respond = RestClient.post "http://localhost:3001/back/socialnotify", {:cupons => cupon_ids, :friends => friends, :user_id => user_id, :venue_id => venue_id}.to_json, :content_type => :json, :accept => :json
+    url_base = Cupon.getURL_env
+    url = url_base + "/back/socialnotify"
+    respond = RestClient.post url, {:cupons => cupon_ids, :friends => friends, :user_id => user_id, :venue_id => venue_id}.to_json, :content_type => :json, :accept => :json
+  end
+
+  def self.getURL_env
+    if Rails.env.development?
+      return ENV["DEV_API"]
+    elsif Rails.env.production?
+      return ENV["PROD_API"]
+    end
   end
 
 end

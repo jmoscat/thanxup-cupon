@@ -8,4 +8,4 @@
 # makes 'Your_Gmail_Username' available as ENV["GMAIL_USERNAME"]
 DEV_API: 'http://localhost:3000'
 STAGE_API: 'http://localhost:3000'
-PROD_CUPON: 'http://api.thanxup.com'
+PROD_API: 'http://api.thanxup.com:3000'

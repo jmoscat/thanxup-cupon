@@ -83,12 +83,12 @@ production:
   sessions:
     default:
       hosts:
-        - ds059957.mongolab.com:59957
+        - localhost:27017
       database: thanxup-cupon
       username: thanxup-cupon
-      password: "19032011"
+      password: "Cup19032011"
       options:
-        consistency: :strong
+        consistency: :eventual
         # In the test environment we lower the retries and retry interval to
         # low amounts for fast failures.
         max_retries: 1
