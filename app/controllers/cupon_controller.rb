@@ -2,7 +2,7 @@ class CuponController < ApplicationController
 
 	def show
     @cupon = Cupon.find_by(cupon_id: params[:cupon_id])
-    @url = "http://api.thanxup.com/place/site/"+@cupon.store_id
+    @url = "http://api.thanxup.com:3000/place/site/"+@cupon.store_id
     date_from = @cupon.valid_from.strftime("%d/%m/%Y")
     date_until = @cupon.valid_until.strftime("%d/%m/%Y")
     @date = date_from + " - " +date_until
