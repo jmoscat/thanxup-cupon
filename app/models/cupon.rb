@@ -14,6 +14,8 @@ class Cupon
   field :user_name, type: String
   field :venue_name, type: String
   field :venue_pass, type: String
+  field :venue_kind, type: String
+  field :venue_address, type: String
 
 # Cupon info
 	field :cupon_text, type: String
@@ -55,6 +57,8 @@ class Cupon
     new_cupon.cupon_text = params["cupon_text"]
     new_cupon.valid_from = params["valid_from"]
     new_cupon.valid_until = params["valid_until"]
+    new_cupon.venue_kind = params["venue_kind"]
+    new_cupon.venue_address = params["venue_address"]
 
     new_cupon.kind = params["kind"]
     new_cupon.social_text = params["social_text"]
