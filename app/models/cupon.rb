@@ -150,7 +150,7 @@ class Cupon
   end
   def self.getCupons(user_id, update_stamp_str)
     update_stamp = Time.parse(update_stamp_str)
-    return Cupon.where(user_fb_id: user_id, used: false, :created_at.gte => update_stamp).to_json(:only => [ :cupon_id, :store_id, :venue_name ,:cupon_text, :valid_from, :valid_until, :kind, :social_text ])
+    return Cupon.where(user_fb_id: user_id, used: false, :created_at.gte => update_stamp).to_json(:only => [ :cupon_id, :store_id, :venue_name ,:cupon_text, :venue_address, :venue_kind ,:valid_from, :valid_until, :kind, :social_text ])
   end
 
   def self.getUsedCupons (user_id, update_stamp_str)
