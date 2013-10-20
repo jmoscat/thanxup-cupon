@@ -67,8 +67,7 @@ class Cupon
     new_cupon.social_from  = params["social_from"]
     new_cupon.social_until  = params["social_until"]
     new_cupon.save
-    #Notificacion API
-
+    Cupon.notify_cupon(uid)
   end
 
 #First method call to create a cupon for list of friends
@@ -114,7 +113,7 @@ class Cupon
           Cupon.cupon_share_notify(cupons, friends, father_cupon.user_fb_id,father_cupon.store_id)
         end
       end
-      if (father_cupon.kind == "SHA") && (father_cupon.social_redeem == false)
+      if (father_cupon.kind == "SHARABLE") && (father_cupon.social_redeem == false)
         father_cupon.social_count = father_cupon.social_count + cupons.count
         father_cupon.save
         Cupon.weekly_notify(father_cupon.user_fb_id, 1, cupons.count)
@@ -220,6 +219,11 @@ class Cupon
     respond = RestClient.post url, {:cupons => cupon_ids, :friends => friends, :user_id => user_id, :venue_id => venue_id}.to_json, :content_type => :json, :accept => :json
   end
 
+  def self.notify_cupon(user_id)
+    url_base = Cupon.getURL_env
+    url = url_base + "/back/notifycupon"
+    respond = RestClient.post url, {:user_id => user_id}.to_json, :content_type => :json, :accept => :json
+  end
   def self.getURL_env
     if Rails.env.development?
       return ENV["DEV_API"]
