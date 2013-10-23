@@ -7,9 +7,9 @@ def template
 	render :status =>200, :json=> {:status => "Success"}
 end
 
-#curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"cupon_id":"49cf2770cfb12893d37b5d4d3a799034e5c3c5d1016908c23091053bc9a6d39e", "friends":["1220884986","616177189"]}' http://coupon.thanxup.com/api/share.json
+#curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"cupon_id":"ae4d6084ab064fac982fb608cbd9bd1aa4c4b77a32a5a652f947e05b8b0a3e13", "friends":["1220884986","545887286"]}' http://coupon.thanxup.com/api/share.json
 def share
-	respond = Cupon.cupon_from_cupon(params[:cupon_id], params[:friends])
+	respond = Cupon.cupon_from_cupon(params[:cupon_id], JSON.parse(params[:friends]))
 	render :status =>200, :json=> {:status => respond}
 end
 

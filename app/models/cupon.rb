@@ -74,15 +74,15 @@ class Cupon
   def self.cupon_from_cupon(cupon_id, friends)
     father_cupon = Cupon.find_by(cupon_id: cupon_id)
     if father_cupon.social_limit <= father_cupon.social_count
-      return "Already shared"
+      return "Ya has compartido..."
     elsif friends.nil?
-      return "Empty friends"
+      return "Sorry...no tienes amigos :("
     elsif Cupon.validate_date(father_cupon.valid_from, father_cupon.valid_until)
       CuponFriends.perform_async(cupon_id, friends)
       father_cupon.shared_date = Date.today
-      return "Sucess"
+      return "Compartido!"
     else
-      return "Expired"
+      return "Este cupon esta caducado..."
     end
   end
 
