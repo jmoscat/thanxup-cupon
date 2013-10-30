@@ -4,6 +4,9 @@ ThanxupCupon::Application.routes.draw do
   match '/check' => 'cupon#check'
   match '/success' => 'cupon#success'
 
+  match '/what' => 'info#what'
+  match '/legal' => 'info#legal'
+
 
   match '/api/getcupons' => 'api#getcupons'
   match '/api/template' => 'api#template'
