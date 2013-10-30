@@ -33,35 +33,22 @@
 <body>
 <!-- Home -->
 <div data-role="page" id="page1">
-    <div data-theme="a" data-role="header">
-        <h1>
-            ThanxUP®
-        </h1>
-    </div>
-    <div data-role="content">
-    	<h1>
-        - <a href=  <%= @url %>> <%= @cupon.venue_name %></a> - 
+  <div data-theme="a" data-role="header">
+      <h1>
+          ThanxUP®
       </h1>
-      <h2>
-        <%= @cupon.cupon_text %>
-      </h2>
-        <div style=" text-align:center">
-          <%= image_tag"http://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+@redeem %>
-        </div>
-      <h4>
-       <font color="#92b1cd">Enseñanos este cupón en tu próxima visita ;)</font>
-      </h4>
-      <h5>
-        <font color="#ff6e00">Validez: </font> <%=@date %><br >
-        <font color="#ff6e00">Uso éxclusivo para:</font> <%=@cupon.user_name %>
-      </h5>
-    </div>
-    <div data-theme="c
-    " data-role="footer" data-position="fixed">
-        <h3>
-            Powered by <a href="http://thanxup.com"><font color="#ff6e00">thanxup.com</font></a>
-        </h3>
-    </div>
+  </div>
+  <div data-role="content">
+    <center><font color="#92b1cd"><h1>-ThanxUP Aviso Legal-</h1></font></center>
+    En cumplimiento de lo dispuesto en el artículo 5.5 de la Ley Orgánica 15/1999, de 13 de diciembre, de Protección de Datos de Carácter Personal, le informamos que ThanxUP(iniciativa de Widehaven Ltd., con número de registro en UK: 08014537) ha obtenido sus datos de carácter personal mediante la API de Facebook habiendo obtenido su permiso inicial. Le informamos de la posibilidad de ejercer sus derechos de acceso, rectificación, cancelación y oposición respecto a sus datos de carácter personal, solicitándolo por escrito en la siguiente dirección support@thanxup.com.
+  
+
+ </div>
+  <div data-theme="c" data-role="footer" data-position="fixed">
+      <h3>
+          Powered by <a href="http://thanxup.com"><font color="#ff6e00">thanxup.com</font></a>
+      </h3>
+  </div>
 </div>
 </body>
 </html>
