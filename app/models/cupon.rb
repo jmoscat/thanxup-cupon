@@ -75,7 +75,7 @@ class Cupon
     father_cupon = Cupon.find_by(cupon_id: cupon_id)
     if father_cupon.social_limit <= father_cupon.social_count
       return "Ya has compartido..."
-    elsif friends.nil?
+    elsif friends.empty?
       return "Sorry...no tienes amigos :("
     elsif Cupon.validate_date(father_cupon.valid_from, father_cupon.valid_until)
       CuponFriends.perform_async(cupon_id, friends)
