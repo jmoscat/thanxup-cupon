@@ -25,7 +25,7 @@ class Cupon
   field :used_date, type: DateTime
 
 #
-  field :kind, type: String 
+  field :kind, type: String #IND, SHA
 
 # Sharable information
   field :social_redeem, type: Boolean,  default: false
@@ -114,7 +114,7 @@ class Cupon
           Cupon.cupon_share_notify(cupons, friends, father_cupon.user_fb_id,father_cupon.store_id)
         end
       end
-      if (father_cupon.kind == "SHARABLE") && (father_cupon.social_redeem == false)
+      if (father_cupon.kind == "SHA") && (father_cupon.social_redeem == false)
         father_cupon.social_count = father_cupon.social_count + cupons.count
         father_cupon.save
         Cupon.weekly_notify(father_cupon.user_fb_id, 1, cupons.count)
@@ -172,7 +172,7 @@ class Cupon
   end
 
   def self.validate_date(from, till)
-    if (DateTime.now>= from) and (DateTime.now <= till)
+    if (DateTime.now.utc >= from) and (DateTime.now.utc <= till)
       return true
     else
       return false
