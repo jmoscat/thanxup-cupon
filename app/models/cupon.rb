@@ -32,7 +32,7 @@ class Cupon
   field :social_text, type: String
   field :social_count, type: Integer, default: 0
   field :social_limit, type: Integer
-  field :social_offer, type: String
+  field :social_offer, type: String #deprecated
   field :social_from, type: DateTime
   field :social_until, type: DateTime
   field :shared_date, type: DateTime
@@ -76,7 +76,9 @@ class Cupon
     if father_cupon.social_limit <= father_cupon.social_count
       return "Ya has compartido..."
     elsif friends.empty?
-      return "Sorry...no tienes amigos :("
+      return "Sorry...no has seleccionado amigos :("
+    elsif (friends.size < 3)
+      return "Has seleccionado a menos de 3 amigos..."
     elsif Cupon.validate_date(father_cupon.valid_from, father_cupon.valid_until)
       CuponFriends.perform_async(cupon_id, friends)
       father_cupon.shared_date = Date.today
@@ -101,6 +103,8 @@ class Cupon
             :user_name => JSON.parse(name)["name"],
             :venue_pass => father_cupon.venue_pass,
             :venue_name =>father_cupon.venue_name,
+            :venue_kind => father_cupon.venue_kind,
+            :social_redeem => false, 
             :parent_cupon => father_cupon.cupon_id,
             :venue_address => father_cupon.venue_address,
             :cupon_text => father_cupon.cupon_text,
@@ -141,13 +145,14 @@ class Cupon
         :venue_pass => father_cupon.venue_pass,
         :venue_address => father_cupon.venue_address,
         :parent_cupon => "",
+        :venue_kind => father_cupon.venue_kind,
         :cupon_text => father_cupon.social_text,
         :valid_from => father_cupon.social_from,
         :valid_until => father_cupon.social_until,
         :used => false,
         :kind => "IND"
         )   
-    #notificacion API sin worker
+    Cupon.notify_cupon(user_id)
   end
   def self.getCupons(user_id, update_stamp_str)
     update_stamp = Time.parse(update_stamp_str)
