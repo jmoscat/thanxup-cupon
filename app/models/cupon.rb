@@ -141,7 +141,7 @@ class Cupon
         :cupon_id => secure_hash("#{user_id}"+ DateTime.now.to_s),
         :user_fb_id => user_id,
         :venue_name => father_cupon.venue_name,
-        :user_name => father.cupon.user_name,
+        :user_name => father_cupon.user_name,
         :venue_pass => father_cupon.venue_pass,
         :venue_address => father_cupon.venue_address,
         :parent_cupon => "",
