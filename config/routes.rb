@@ -11,4 +11,7 @@ ThanxupCupon::Application.routes.draw do
   match '/api/getcupons' => 'api#getcupons'
   match '/api/template' => 'api#template'
   match '/api/share' => 'api#share'
+
+  match '/getapp' => 'store#getapp'
+
 end
